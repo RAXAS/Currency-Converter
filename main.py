@@ -6,12 +6,14 @@ TOKEN = "5216680764:AAFpQ4yUAtdqPMkq58PUmJiYP5YnE5ld0f0"
 bot = telebot.TeleBot(TOKEN)
 
 
-elements = list(input("Введите числа через пробел:\n").split())
+elements = list(input("Введите значения через пробел:\n").split())
 
 print(elements[0])
 response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={elements[0]}&tsyms={elements[1]}")
 response.text
-print(response.text)
+#response = json.loads(api.json)
+a = str(response.text)
+print(a)
 
 
 @bot.message_handler(commands=['start'])
@@ -20,6 +22,11 @@ def start(message):
     bot.register_next_step_handler(sent, сonverter)
 
 def сonverter(message):
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
+    message = list(input("Введите числа через пробел:\n").split())
+    сurrency_one = message[0]
+    сurrency_two = message[1]
+    value = message[2]
+    сurrency_final = value * 1
+    bot.send_message(message.chat.id, 'Привет, {elements}. Рад тебя видеть.'.format(elements=list(input().split()).text))
 
 bot.polling()
