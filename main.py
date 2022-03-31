@@ -10,10 +10,11 @@ elements = list(input("Введите значения через пробел:\
 
 print(elements[0])
 response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={elements[0]}&tsyms={elements[1]}")
-response.text
-#response = json.loads(api.json)
-a = str(response.text)
-print(a)
+
+a = json.loads(response.text)
+b = list(a.values())
+c = float(elements[2]) * float(b[0])
+print(c)
 
 
 @bot.message_handler(commands=['start'])
