@@ -7,7 +7,7 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    sent = bot.send_message(message.chat.id, 'Введите валюты, которые хотите конвертировать в формате: первая валюта, вторая валюта, колличество первой валюты')
+    sent = bot.send_message(message.chat.id, 'Введите валюты, которые хотите конвертировать в формате: первая валюта, вторая валюта, колличество первой валюты. Например: usd rub 100')
     bot.register_next_step_handler(sent, сonverter)
 
 def сonverter(message):
