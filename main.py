@@ -14,6 +14,7 @@ def start(message):
 def values(message):
     available_values = bot.send_message(message.chat.id, 'Доступны все буквенные коды валют криптовалют, DeFi и NFT')
     bot.register_next_step_handler(available_values, сonverter)
+
 @bot.message_handler()
 def сonverter(message):
     elements = message.text
