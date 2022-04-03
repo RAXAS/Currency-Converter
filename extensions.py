@@ -18,6 +18,4 @@ class ValueConverter:
         except ValueError:
             raise ConversionException(f"Не удалось обработать колличество {amount}")
 
-        response = json.loads(requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}").text)
-        b = ValueConverter(list(response.values()))
-        c = float(amount) * float(b[0])
+        #response = json.loads(requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}").text)
