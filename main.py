@@ -1,4 +1,6 @@
 import telebot
+import requests
+import json
 from script import TOKEN
 from extensions import ConversionException, ValueConverter
 
@@ -22,9 +24,11 @@ def сonverter(message):
     except ValueError:
         raise ConversionException("Введено неверное колличество параметров")
 
-    total_base = ValueConverter.convert(quote, base, amount)
-    #response = json.loads(requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}").text)
 
+    response = json.loads(requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}").text)
+    b = list(response.values())
+    c = float(amount) * float(b[0])
+    total_base = ValueConverter.convert(quote, base, amount)
     bot.send_message(message.chat.id, f'{amount} {quote} = {c} {base}   {total_base}')
 
 bot.polling()
