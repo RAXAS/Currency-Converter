@@ -25,8 +25,9 @@ def сonverter(message):
         raise ConversionException("Введено неверное колличество параметров")
 
 
-    response = json.loads(requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}").text)
-    b = list(response.values())
+    response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}")
+    a = json.loads(response.text)
+    b = list(a.values())
     c = float(amount) * float(b[0])
     total_base = ValueConverter.convert(quote, base, amount)
     bot.send_message(message.chat.id, f'{amount} {quote} = {c} {base}   {total_base}')
