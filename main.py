@@ -1,7 +1,7 @@
 import telebot
 import requests
 import json
-from script import TOKEN
+from script import TOKEN, keys
 from extensions import ConversionException, ValueConverter
 
 bot = telebot.TeleBot(TOKEN)
@@ -13,23 +13,24 @@ def start(message):
 
 @bot.message_handler(commands=['values'])
 def values(message):
-    available_values = bot.send_message(message.chat.id, 'Доступны все буквенные коды валют, криптовалют, DeFi и NFT')
-    bot.register_next_step_handler(available_values, сonverter)
+    text = 'Доступные валюты:'
+    for key in keys.keys():
+        text = '\n'.join((text, key,))
+    bot.reply_to(message, text)
 
-@bot.message_handler()
-def сonverter(message):
-
+@bot.message_handler(content_types=['text'])
+def get_price(message: telebot.types.Message):
     try:
         quote, base, amount = message.text.split(" ")
     except ValueError:
         raise ConversionException("Введено неверное колличество параметров")
 
 
-    response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote}&tsyms={base}")
-    a = json.loads(response.text)
-    b = list(a.values())
-    c = float(amount) * float(b[0])
-    total_base = ValueConverter.convert(quote, base, amount)
-    bot.send_message(message.chat.id, f'{amount} {quote} = {c} {base}   {total_base}')
+    #response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}")
+    #a = json.loads(response.text)
+    #b = list(a.values())
+    #c = float(amount) * float(b[0])
+    #total_base = ValueConverter.get_price(quote, base, amount)
+    bot.send_message(message.chat.id, f'{amount} {quote} = {base}')
 
 bot.polling()
