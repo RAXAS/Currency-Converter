@@ -1,40 +1,35 @@
-import telebot
-from script import TOKEN, keys
-from extensions import ConversionException, ValueConverter
-
-bot = telebot.TeleBot(TOKEN)
+import requests
+import json
+from script import keys
 
 
-@bot.message_handler(commands=['start', 'help'])
-def start(message):
-    text = 'Введите буквенные коды валют, которые хотите конвертировать в формате: <имя валюты, цену которой вы хотите узнать>, <имя валюты в которой надо узнать>, <колличество первой валюты>. Например: доллар рубль 100'
-    bot.reply_to(message, text)
+class ConversionException(Exception):
+    pass
 
 
-@bot.message_handler(commands=['values'])
-def values(message):
-    text = 'Доступные валюты:'
-    for key in keys.keys():
-        text = '\n'.join((text, key,))
-    bot.reply_to(message, text)
+class ValueConverter:
+    @staticmethod
+    def get_price(quote: str, base: str, amount: str):
 
+        if quote == base:
+            raise ConversionException("Невозможно перевести одинаковые валюты")
 
-@bot.message_handler(content_types=['text'])
-def get_price(message: telebot.types.Message):
-    try:
-        input_values = message.text.split(" ")
-        if len(input_values) != 3:
-            raise ConversionException('Введите команду или 3 параметра')
+        try:
+            quote_ticker = keys[quote]
+        except KeyError:
+            raise ConversionException(f'Не смог обработать валюту {quote}')
 
-        quote, base, amount = input_values
-        total_base = ValueConverter.get_price(quote, base, amount)
+        try:
+            base_ticker = keys[base]
+        except KeyError:
+            raise ConversionException(f'Не смог обработать валюту {base}')
 
-    except ConversionException as e:
-        bot.reply_to(message, f'Ошибка пользователя.\n{e}')
-    except Exception as e:
-        bot.reply_to(message, f'Что-то пошло не так с {e}')
-    else:
-        bot.reply_to(message, f'{amount} {quote} = {total_base} {base}')
+        try:
+            amount = float(amount)
+        except ValueError:
+            raise ConversionException(f"Не удалось обработать колличество {amount}")
 
+        response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}")
 
-bot.polling()
+        total_base = float(json.loads(response.content)[base_ticker]) * amount
+        return total_base
