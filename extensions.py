@@ -30,6 +30,5 @@ class ValueConverter:
             raise ConversionException(f"Не удалось обработать колличество {amount}")
 
         response = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}")
-
         total_base = float(json.loads(response.content)[base_ticker]) * amount
         return total_base
