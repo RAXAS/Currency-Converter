@@ -11,13 +11,16 @@ class ValueConverter:
     @staticmethod
     def get_price(quote: str, base: str, amount: str):
 
-        if quote == base:
-            raise ConversionException("Невозможно перевести одинаковые валюты")
+        if int(amount) < 0:
+            raise ConversionException("Колличество валюты не может быть ниже нуля")
 
         try:
             quote_ticker = keys[quote]
         except KeyError:
             raise ConversionException(f'Не смог обработать валюту {quote}')
+
+        if quote == base:
+            raise ConversionException("Невозможно перевести одинаковые валюты")
 
         try:
             base_ticker = keys[base]
