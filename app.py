@@ -5,9 +5,18 @@ from extensions import ConversionException, ValueConverter
 bot = telebot.TeleBot(TOKEN)
 
 
-@bot.message_handler(commands=['start', 'help'])
+@bot.message_handler(commands=['start'])
 def start(message):
-    text = 'Введите буквенные коды валют, которые хотите конвертировать в формате: <имя валюты, цену которой вы хотите узнать>, <имя валюты в которой надо узнать>, <колличество первой валюты>. Например: доллар рубль 100'
+    text = 'Введите буквенные коды валют, которые хотите конвертировать в формате: ' \
+           '<имя валюты, цену которой вы хотите узнать>, <имя валюты в которой надо узнать>, ' \
+           '<колличество первой валюты>. Например: доллар рубль 100.\nДоступные команды:\n/start\n/help\n/values'
+    bot.reply_to(message, text)
+
+
+@bot.message_handler(commands=['help'])
+def helps(message):
+    text = "Доступные команды: \n/start - описание работы программы \n/help - доступные команды " \
+           "\n/values - доступные валюты"
     bot.reply_to(message, text)
 
 
